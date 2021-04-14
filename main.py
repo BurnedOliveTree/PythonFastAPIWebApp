@@ -5,3 +5,7 @@ app = FastAPI()
 @app.get('/')
 def root():
     return {'message': 'Hello world'}
+
+@app.get('/hello/{name}')
+def hello_name_view(name: str):
+    return f'Hello {name}'
