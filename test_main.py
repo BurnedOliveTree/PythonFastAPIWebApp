@@ -1,4 +1,5 @@
 from fastapi.testclient import TestClient
+import pytest
 
 from main import app
 
@@ -10,7 +11,7 @@ def test_read_main():
     assert response.json() == {'message': 'Hello world'}
 
 @pytest.mark.parametrize('name', ['Zenek', 'Marek', 'Alojzy'])
-def test_hello_name():
+def test_hello_name(name: str):
     response = client.get(f'/hello/{name}')
     assert response.status_code == 200
     assert response.text == f'"Hello {name}"'
