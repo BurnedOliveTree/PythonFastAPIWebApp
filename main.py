@@ -20,7 +20,7 @@ def hello_name_view(name: str):
     return f'Hello {name}'
 
 @app.get('/auth')
-def auth(password: str, password_hash: str, response: Response):
+def auth(response: Response, password: str = None, password_hash: str = None):
     if password is None or password_hash is None or len(password) == 0 or len(password_hash) == 0:
         response.status_code = 401
     else:
