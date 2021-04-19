@@ -45,5 +45,5 @@ async def register(patient: Patient):
     app.counter += 1
     patient.id = app.counter
     patient.register_date = str(date.today())
-    patient.vaccination_date = str(date.today() + timedelta(days=len(re.sub("[^a-zA-Z]+", '', patient.name+patient.surname)))
+    patient.vaccination_date = str(date.today() + timedelta(days=len(re.sub("[^a-zA-Z]+", '', patient.name+patient.surname))))
     return patient
