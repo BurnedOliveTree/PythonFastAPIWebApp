@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request, Response
 from hashlib import sha512
 from pydantic import BaseModel
 from datetime import date, timedelta
+import re
 
 app = FastAPI()
 app.counter = 0
@@ -44,5 +45,5 @@ async def register(patient: Patient):
     app.counter += 1
     patient.id = app.counter
     patient.register_date = str(date.today())
-    patient.vaccination_date = str(date.today() + timedelta(days=len(patient.name)+len(patient.surname)))
+    patient.vaccination_date = str(date.today() + timedelta(days=len(re.sub("[^a-zA-Z]+", '', patient.name+patient.surname)))
     return patient
