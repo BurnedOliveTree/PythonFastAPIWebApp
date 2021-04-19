@@ -6,6 +6,7 @@ import re
 
 app = FastAPI()
 app.counter = 0
+app.patients = dict()
 
 class Patient(BaseModel):
     id: int = None
@@ -41,9 +42,21 @@ def auth(response: Response, password: str = None, password_hash: str = None):
             response.status_code = 401
 
 @app.post("/register", status_code=201)
-async def register(patient: Patient):
+def register(patient: Patient):
     app.counter += 1
     patient.id = app.counter
     patient.register_date = str(date.today())
     patient.vaccination_date = str(date.today() + timedelta(days=len(re.sub("[^a-zA-Z]+", '', patient.name+patient.surname))))
+    app.patients[app.counter] = patient
     return patient
+
+@app.get("/patient/{id}")
+def patient(response: Response, id: int):
+    if id < 1:
+        response.status_code = 400
+    elif id not in app.patients.keys():
+        response.status_code = 404
+    else:
+        response.status_code = 200
+        return app.patients[id]
+    

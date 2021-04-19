@@ -50,3 +50,18 @@ def test_register():
         "register_date": str(date.today()),
         "vaccination_date": str(date.today() + timedelta(days=8))
     }
+
+def test_patient():
+    response = client.get('/patient/1')
+    assert response.status_code == 200
+    assert response.json() == {
+        "id": 1,
+        "name": "Jan",
+        "surname": "Nowak",
+        "register_date": str(date.today()),
+        "vaccination_date": str(date.today() + timedelta(days=8))
+    }
+    response = client.get('/patient/20')
+    assert response.status_code == 404
+    response = client.get('/patient/0')
+    assert response.status_code == 400
