@@ -21,7 +21,10 @@ def hello_name_view(name: str):
 
 @app.get('/auth')
 def auth(password: str, password_hash: str, response: Response):
-    if sha512(password.encode('utf-8')).hexdigest() == password_hash:
-        response.status_code = 204
-    else:
+    if password is None or password_hash is None or len(password) == 0 or len(password_hash) == 0:
         response.status_code = 401
+    else:
+        if sha512(password.encode('utf-8')).hexdigest() == password_hash:
+            response.status_code = 204
+        else:
+            response.status_code = 401
