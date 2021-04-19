@@ -1,7 +1,17 @@
 from fastapi import FastAPI, Request, Response
-from  hashlib import sha512
+from hashlib import sha512
+from pydantic import BaseModel
+from datetime import date, timedelta
 
 app = FastAPI()
+app.counter = 0
+
+class Patient(BaseModel):
+    id: int = None
+    name: str
+    surname: str
+    register_date: str = None
+    vaccination_date: str = None
 
 @app.get('/')
 def root():
@@ -28,3 +38,11 @@ def auth(response: Response, password: str = None, password_hash: str = None):
             response.status_code = 204
         else:
             response.status_code = 401
+
+@app.post("/register", status_code=201)
+async def register(patient: Patient):
+    app.counter += 1
+    patient.id = app.counter
+    patient.register_date = str(date.today())
+    patient.vaccination_date = str(date.today() + timedelta(days=len(patient.name)+len(patient.surname)))
+    return patient
