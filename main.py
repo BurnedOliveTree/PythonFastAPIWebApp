@@ -1,5 +1,6 @@
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, Request, Response, Depends, Cookie
 from fastapi.responses import HTMLResponse
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from hashlib import sha512
 from pydantic import BaseModel
 from datetime import date, timedelta
@@ -8,6 +9,7 @@ import re
 app = FastAPI()
 app.counter = 0
 app.patients = dict()
+security = HTTPBasic()
 
 class Patient(BaseModel):
     id: int = None
@@ -31,6 +33,24 @@ def method(request: Request):
 @app.get('/hello')
 def hello():
     return HTMLResponse(content=f'<h1>Hello! Today date is {date.today()}</h1>')
+
+@app.post('/login_session')
+def login_session(response: Response, credentials: HTTPBasicCredentials = Depends(security)):
+    if credentials.username == '4dm1n' and credentials.password == 'NotSoSecurePa$$':
+        response.status_code = 201
+        response.set_cookie(key="session_token", value=app.counter)
+        app.counter += 1
+    else:
+        response.status_code = 401
+    return response
+    
+@app.post('/login_token')
+def login_token(response: Response, credentials: HTTPBasicCredentials = Depends(security)):
+    if credentials.username == '4dm1n' and credentials.password == 'NotSoSecurePa$$':
+        response.status_code = 201
+        return {'token': app.counter}
+    else:
+        response.status_code = 401
 
 # @app.get('/hello/{name}')
 # def hello_name_view(name: str):

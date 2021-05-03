@@ -33,6 +33,19 @@ def test_hello():
     assert response.status_code == 200
     assert response.content.decode('utf-8') == f'<h1>Hello! Today date is {date.today()}</h1>'
 
+def test_login():
+    response = client.post('/login_session', headers={"Authorization": "Basic NGRtMW46Tm90U29TZWN1cmVQYSQk"})
+    assert response.status_code == 201
+    assert response.cookies['session_token']
+    response = client.post('/login_session', headers={"Authorization": "Basic blewbvleflkdsflkdnsflk"})
+    assert response.status_code == 401
+    
+    response = client.post('/login_token', headers={"Authorization": "Basic NGRtMW46Tm90U29TZWN1cmVQYSQk"})
+    assert response.status_code == 201
+    assert response.json()['token']
+    response = client.post('/login_token', headers={"Authorization": "Basic blewbvleflkdsflkdnsflk"})
+    assert response.status_code == 401
+
 # @pytest.mark.parametrize('name', ['Zenek', 'Marek', 'Alojzy'])
 # def test_hello_name(name: str):
 #     response = client.get(f'/hello/{name}')
@@ -49,7 +62,7 @@ def test_register():
     response = client.post('/register', json={"name": "Jan", "surname": "Nowak"})
     assert response.status_code == 201
     assert response.json() == {
-        "id": 1,
+        "id": 2,
         "name": "Jan",
         "surname": "Nowak",
         "register_date": str(date.today()),
@@ -57,10 +70,10 @@ def test_register():
     }
 
 def test_patient():
-    response = client.get('/patient/1')
+    response = client.get('/patient/2')
     assert response.status_code == 200
     assert response.json() == {
-        "id": 1,
+        "id": 2,
         "name": "Jan",
         "surname": "Nowak",
         "register_date": str(date.today()),
