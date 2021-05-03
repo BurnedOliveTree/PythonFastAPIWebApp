@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request, Response
+from fastapi.responses import HTMLResponse
 from hashlib import sha512
 from pydantic import BaseModel
 from datetime import date, timedelta
@@ -27,9 +28,13 @@ def root():
 def method(request: Request):
     return {'method': request.method}
 
-@app.get('/hello/{name}')
-def hello_name_view(name: str):
-    return f'Hello {name}'
+@app.get('/hello')
+def hello():
+    return HTMLResponse(content=f'<h1>Hello! Today date is {date.today()}</h1>')
+
+# @app.get('/hello/{name}')
+# def hello_name_view(name: str):
+#     return f'Hello {name}'
 
 @app.get('/auth')
 def auth(response: Response, password: str = None, password_hash: str = None):
