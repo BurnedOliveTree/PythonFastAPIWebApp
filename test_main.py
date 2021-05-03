@@ -62,7 +62,7 @@ def test_register():
     response = client.post('/register', json={"name": "Jan", "surname": "Nowak"})
     assert response.status_code == 201
     assert response.json() == {
-        "id": 2,
+        "id": 3,
         "name": "Jan",
         "surname": "Nowak",
         "register_date": str(date.today()),
@@ -70,10 +70,10 @@ def test_register():
     }
 
 def test_patient():
-    response = client.get('/patient/2')
+    response = client.get('/patient/3')
     assert response.status_code == 200
     assert response.json() == {
-        "id": 2,
+        "id": 3,
         "name": "Jan",
         "surname": "Nowak",
         "register_date": str(date.today()),

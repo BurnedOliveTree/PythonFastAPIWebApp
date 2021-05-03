@@ -7,7 +7,7 @@ from datetime import date, timedelta
 import re
 
 app = FastAPI()
-app.counter = 0
+app.counter = 1
 app.patients = dict()
 security = HTTPBasic()
 
@@ -38,8 +38,8 @@ def hello():
 def login_session(response: Response, credentials: HTTPBasicCredentials = Depends(security)):
     if credentials.username == '4dm1n' and credentials.password == 'NotSoSecurePa$$':
         response.status_code = 201
-        response.set_cookie(key="session_token", value=app.counter)
         app.counter += 1
+        response.set_cookie(key="session_token", value=app.counter)
     else:
         response.status_code = 401
     return response
