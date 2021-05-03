@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, Response, Depends, Cookie
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from hashlib import sha512
 from pydantic import BaseModel
@@ -33,6 +33,32 @@ def method(request: Request):
 @app.get('/hello')
 def hello():
     return HTMLResponse(content=f'<h1>Hello! Today date is {date.today()}</h1>')
+
+@app.get('/welcome_session')
+def welcome_session(response: Response, session_token: int = Cookie(None), format: str = None):
+    if session_token == app.counter:
+        response.status_code = 200
+        if format == 'json':
+            return JSONResponse(content={"message": "Welcome!"})
+        elif format == 'html':
+            return HTMLResponse(content='<h1>Welcome!</h1>')
+        else:
+            return Response(content='Welcome!', media_type='text/plain')
+    else:
+        response.status_code = 401
+
+@app.get('/welcome_token')
+def welcome_token(response: Response, token: int, format: str = None):
+    if token == app.counter:
+        response.status_code = 200
+        if format == 'json':
+            return JSONResponse(content={"message": "Welcome!"})
+        elif format == 'html':
+            return HTMLResponse(content='<h1>Welcome!</h1>')
+        else:
+            return Response(content='Welcome!', media_type='text/plain')
+    else:
+        response.status_code = 401
 
 @app.post('/login_session')
 def login_session(response: Response, credentials: HTTPBasicCredentials = Depends(security)):

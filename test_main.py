@@ -46,6 +46,29 @@ def test_login():
     response = client.post('/login_token', headers={"Authorization": "Basic blewbvleflkdsflkdnsflk"})
     assert response.status_code == 401
 
+def test_welcome():
+    response = client.get('/welcome_session?format=json')
+    assert response.status_code == 200
+    assert response.headers['content-type'] == 'application/json'
+    response = client.get('/welcome_session?format=html')
+    assert response.status_code == 200
+    assert response.headers['content-type'] == 'text/html; charset=utf-8'
+    response = client.get('/welcome_session')
+    assert response.status_code == 200
+    assert response.headers['content-type'] == 'text/plain; charset=utf-8'
+    
+    response = client.get('/welcome_token?token=2&format=json')
+    assert response.status_code == 200
+    assert response.headers['content-type'] == 'application/json'
+    response = client.get('/welcome_token?token=2&format=html')
+    assert response.status_code == 200
+    assert response.headers['content-type'] == 'text/html; charset=utf-8'
+    response = client.get('/welcome_token?token=2&format=')
+    assert response.status_code == 200
+    assert response.headers['content-type'] == 'text/plain; charset=utf-8'
+    response = client.get('/welcome_token?token=2423&format=')
+    assert response.status_code == 401
+
 # @pytest.mark.parametrize('name', ['Zenek', 'Marek', 'Alojzy'])
 # def test_hello_name(name: str):
 #     response = client.get(f'/hello/{name}')
